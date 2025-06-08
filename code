@@ -1,0 +1,108 @@
+#include<iostream>
+#include<string>
+using namespace std;
+const int MAX_MOVIES = 10; 
+const int MAX_SHOWTIMES = 5; 
+void viewMovies(string movieTitles[], string movieGenres[], int movieDurations[], string movieShowtimes[][MAX_SHOWTIMES], int movieAvailableSeats[][MAX_SHOWTIMES], int numMovies, int numShowtimes[]) {
+    cout << "\nAvailable Movies:\n";
+    for (int i = 0; i < numMovies; ++i) {
+        cout << i + 1 << ". " << movieTitles[i] << " (" << movieGenres[i] << ") - " << movieDurations[i] << " minutes\n";
+        cout << "  Showtimes:\n";
+        for (int j = 0; j < numShowtimes[i]; ++j) {
+            cout << "    " << movieShowtimes[i][j] << " (" << movieAvailableSeats[i][j] << " seats available)\n";
+        }
+        cout << endl;
+    }
+}
+void bookTickets(string movieTitles[], string movieGenres[], int movieDurations[], string movieShowtimes[][MAX_SHOWTIMES], int movieAvailableSeats[][MAX_SHOWTIMES], int numMovies, int numShowtimes[], int movieIndex, int showtimeIndex, int numTickets) {
+    if (movieIndex >= 0 && movieIndex < numMovies && showtimeIndex >= 0 && showtimeIndex < numShowtimes[movieIndex]) {
+        if (numTickets > 0 && numTickets <= movieAvailableSeats[movieIndex][showtimeIndex]) {
+            movieAvailableSeats[movieIndex][showtimeIndex] -= numTickets;
+            cout << "\nBooking Confirmed!\n";
+            cout << "Movie: " << movieTitles[movieIndex] << endl;
+            cout << "Showtime: " << movieShowtimes[movieIndex][showtimeIndex] << endl;
+            cout << "Number of Tickets: " << numTickets << endl;
+        } else {
+            cout << "Insufficient seats available for this showtime.\n";
+        }
+    } else {
+        cout << "Invalid movie or showtime index.\n";
+    }
+}
+void cancelBooking(string movieTitles[], string movieGenres[], int movieDurations[], string movieShowtimes[][MAX_SHOWTIMES], int movieAvailableSeats[][MAX_SHOWTIMES], int numMovies, int numShowtimes[], int movieIndex, int showtimeIndex, int numTickets) {
+    if (movieIndex >= 0 && movieIndex < numMovies && showtimeIndex >= 0 && showtimeIndex < numShowtimes[movieIndex]) {
+        if (numTickets > 0) {
+            movieAvailableSeats[movieIndex][showtimeIndex] += numTickets;
+            cout << "\nBooking Canceled!\n";
+            cout << "Movie: " << movieTitles[movieIndex] << endl;
+            cout << "Showtime: " << movieShowtimes[movieIndex][showtimeIndex] << endl;
+        } else {
+            cout << "Invalid number of tickets to cancel.\n";
+        }
+    } else {
+        cout << "Invalid movie or showtime index.\n";
+    }
+}
+int main() {
+    string movieTitles[MAX_MOVIES] = {"The Shawshank Redemption", "The Godfather", "Pulp Fiction"};
+    string movieGenres[MAX_MOVIES] = {"Drama", "Crime", "Crime"};
+    int movieDurations[MAX_MOVIES] = {142, 175, 154};
+    string movieShowtimes[MAX_MOVIES][MAX_SHOWTIMES] = {
+        {"1.10:00 AM", "2.3:00 PM", "3.7:00 PM", "", ""},
+        {"1.12:00 PM", "2.6:00 PM", "", "", ""},
+        {"1.2:00 PM", "2.9:00 PM", "", "", ""}
+    };
+    int movieAvailableSeats[MAX_MOVIES][MAX_SHOWTIMES] = {
+        {20, 15, 25, 0, 0},
+        {18, 22, 0, 0, 0},
+        {10, 12, 0, 0, 0}
+    };
+    int numShowtimes[MAX_MOVIES] = {3, 2, 2};
+    int numMovies = 3;
+
+    int choice, movieIndex, showtimeIndex, numTickets;
+
+    do {
+        cout << "\nMovie Ticket Booking System\n";
+        cout << "1. View Available Movies\n";
+        cout << "2. Book Tickets\n";
+        cout << "3. Cancel Booking\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                viewMovies(movieTitles, movieGenres, movieDurations, movieShowtimes, movieAvailableSeats, numMovies, numShowtimes);
+                break;
+            case 2:
+                viewMovies(movieTitles, movieGenres, movieDurations, movieShowtimes, movieAvailableSeats, numMovies, numShowtimes);
+                cout << "Enter movie index: ";
+                cin >> movieIndex;
+                cout << "Enter showtime index: ";
+                cin >> showtimeIndex;
+                cout << "Enter number of tickets: ";
+                cin >> numTickets;
+                bookTickets(movieTitles, movieGenres, movieDurations, movieShowtimes, movieAvailableSeats, numMovies, numShowtimes, movieIndex - 1, showtimeIndex - 1, numTickets);
+                break;
+
+            case 3:
+                viewMovies(movieTitles, movieGenres, movieDurations, movieShowtimes, movieAvailableSeats, numMovies, numShowtimes);
+                cout << "Enter movie index: ";
+                cin >> movieIndex;
+                cout << "Enter showtime index: ";
+                cin >> showtimeIndex;
+                cout << "Enter number of tickets: ";
+                cin >> numTickets;
+                cancelBooking(movieTitles, movieGenres, movieDurations, movieShowtimes, movieAvailableSeats, numMovies, numShowtimes, movieIndex - 1, showtimeIndex - 1, numTickets);
+                break;
+            case 4:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
